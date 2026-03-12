@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>家庭支援計劃 — 參加者查詢系統</title>
+<title>兒童發展基金查詢系統 — 參加者查詢系統</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap');
 :root{
@@ -145,6 +145,38 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text
 .btn-ok:hover{background:#0f2540;}
 
 .empty{color:var(--muted);font-size:.88rem;text-align:center;padding:1.2rem 0;}
+
+/* ── ADMIN ── */
+.admin-banner{background:linear-gradient(135deg,#2c1810,#5a2d0c);border-radius:20px;padding:1.8rem 2rem;color:#fff;margin-bottom:1.8rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.admin-banner .stat-num{color:#ffbb55;}
+.adm-tabs{display:flex;gap:.5rem;margin-bottom:1.2rem;flex-wrap:wrap;}
+.adm-tab{padding:.5rem 1.1rem;border:1.5px solid var(--border);border-radius:100px;background:transparent;font-family:'Noto Sans TC',sans-serif;font-size:.85rem;font-weight:500;cursor:pointer;color:var(--muted);transition:all .2s;}
+.adm-tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.adm-tab:hover:not(.active){border-color:var(--primary);color:var(--primary);}
+.adm-search{width:100%;padding:.65rem 1rem;border:1.5px solid var(--border);border-radius:11px;font-family:'Noto Sans TC',sans-serif;font-size:.9rem;background:var(--bg);outline:none;margin-bottom:1rem;transition:border-color .2s,box-shadow .2s;}
+.adm-search:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,58,92,.1);background:#fff;}
+.adm-table{width:100%;border-collapse:collapse;font-size:.86rem;}
+.adm-table th{text-align:left;padding:.55rem .8rem;font-weight:600;color:var(--muted);font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--border);background:var(--bg);}
+.adm-table td{padding:.75rem .8rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+.adm-table tr:last-child td{border-bottom:none;}
+.adm-table tr:hover td{background:#faf9f7;}
+.adm-code{font-weight:700;color:var(--primary);}
+.adm-pct{font-weight:700;}
+.pct-high{color:var(--success);}
+.pct-mid{color:var(--warn,#e67e22);}
+.pct-low{color:var(--danger);}
+.adm-mini-wrap{background:var(--border);border-radius:100px;height:6px;width:60px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:.4rem;}
+.adm-mini-bar{height:100%;border-radius:100px;}
+.bar-high{background:var(--success);}
+.bar-mid{background:#e67e22;}
+.bar-low{background:var(--danger);}
+.adm-export{padding:.5rem 1.1rem;border:1.5px solid var(--border);border-radius:10px;background:transparent;font-family:'Noto Sans TC',sans-serif;font-size:.83rem;cursor:pointer;color:var(--text);transition:all .2s;float:right;}
+.adm-export:hover{border-color:var(--primary);color:var(--primary);}
+.adm-summary{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem;}
+.adm-sum-box{flex:1;min-width:130px;background:var(--bg);border-radius:12px;padding:.9rem 1rem;border:1px solid var(--border);}
+.adm-sum-num{font-size:1.5rem;font-weight:700;font-family:'Noto Serif TC',serif;color:var(--primary);}
+.adm-sum-lbl{font-size:.76rem;color:var(--muted);margin-top:.2rem;}
+
 .toast{position:fixed;bottom:2rem;right:2rem;background:#1c1c1e;color:#fff;padding:.75rem 1.15rem;border-radius:12px;font-size:.86rem;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:9999;display:none;animation:slideIn .3s ease;}
 
 @media(max-width:600px){
@@ -160,7 +192,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text
 <div id="landing">
   <div class="landing-inner">
     <div class="logo-mark">🏠</div>
-    <h1 class="land-title">家庭支援計劃</h1>
+    <h1 class="land-title">兒童發展基金查詢系統</h1>
     <p class="land-sub">參加者查詢系統　·　Participant Portal</p>
     <div class="role-cards">
       <div class="role-card rc-family" onclick="showAuth('family')">
@@ -172,6 +204,11 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text
         <div class="rc-icon">🤝</div>
         <div class="rc-label">友師 Mentor</div>
         <div class="rc-count">Mentor · 115位</div>
+      </div>
+      <div class="role-card" style="border-color:rgba(160,80,20,.4)" onclick="showAuth('admin')">
+        <div class="rc-icon">🔑</div>
+        <div class="rc-label" style="color:#fff">管理員</div>
+        <div class="rc-count">Admin</div>
       </div>
     </div>
   </div>
@@ -225,7 +262,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text
   <div class="topbar">
     <div class="tb-left">
       <div class="tb-logo">🏠</div>
-      <div class="tb-title">家庭支援計劃</div>
+      <div class="tb-title">兒童發展基金查詢系統</div>
     </div>
     <div class="tb-right">
       <div class="user-chip uc-family" id="user-chip">👤</div>
@@ -255,6 +292,26 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text
     <div id="fam-section" style="display:none">
       <div class="sec-title"><span>👨‍👩‍👧</span> 我負責的家庭</div>
       <div class="card" id="fam-card"><p class="empty">載入中…</p></div>
+    </div>
+
+    <!-- Admin panel -->
+    <div id="admin-section" style="display:none">
+      <div class="sec-title"><span>📊</span> 所有參加者出席概覽</div>
+      <div class="card">
+        <div class="adm-tabs">
+          <button class="adm-tab active" id="adm-tab-family" onclick="admSwitch('family')">👨‍👩‍👧‍👦 家庭單位（115戶）</button>
+          <button class="adm-tab" id="adm-tab-mentor" onclick="admSwitch('mentor')">🤝 友師（115位）</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.8rem;">
+          <input class="adm-search" id="adm-search" placeholder="🔍 搜尋編號…" oninput="admFilter()" style="margin-bottom:0;max-width:260px;">
+          <button class="adm-export" onclick="admExport()">⬇️ 匯出 CSV</button>
+        </div>
+        <div class="adm-summary" id="adm-summary"></div>
+        <div style="overflow-x:auto"><table class="adm-table" id="adm-table">
+          <thead id="adm-thead"></thead>
+          <tbody id="adm-tbody"></tbody>
+        </table></div>
+      </div>
     </div>
 
     <!-- Profile -->
@@ -302,13 +359,17 @@ function showLanding() {
 function showAuth(role) {
   curRole = role;
   set('landing','none'); set('auth-page','flex'); set('dashboard','none');
-  const isMentor = role === 'mentor';
+  const isMentor = role === 'mentor', isAdmin = role === 'admin';
   const badge = ge('auth-badge');
-  badge.textContent = isMentor ? '🤝 友師 Mentor' : '🏠 家庭單位';
-  badge.className = 'auth-badge ' + (isMentor ? 'ab-mentor' : 'ab-family');
+  badge.textContent = isAdmin ? '🔑 管理員' : isMentor ? '🤝 友師 Mentor' : '🏠 家庭單位';
+  badge.className = 'auth-badge ' + (isAdmin ? 'ab-family' : isMentor ? 'ab-mentor' : 'ab-family');
+  if (isAdmin) badge.style.cssText='background:rgba(160,80,20,.12);color:#8b4a0e;';
+  else badge.style.cssText='';
   const cls = 'btn-main ' + (isMentor ? 'btn-mentor' : 'btn-family');
   ge('login-btn').className = cls;
   ge('reg-btn').className = cls;
+  // Hide register tab for admin
+  ge('tab-reg').style.display = isAdmin ? 'none' : '';
   switchTab('login'); clearErr();
 }
 function switchTab(t) {
@@ -328,6 +389,12 @@ function doLogin() {
   const u = ge('l-user').value.trim(), p = ge('l-pwd').value;
   clearErr();
   if (!u||!p) { showErr('請填寫所有欄位'); return; }
+  // Admin hardcoded credentials
+  if (curRole==='admin' && u==='C000' && p==='CDF10') {
+    curUser = {username:'C000', role:'admin', code:'C000', regDate:'—'};
+    renderDash(); return;
+  }
+  if (curRole==='admin') { showErr('管理員帳戶或密碼錯誤'); return; }
   const k = curRole+':'+u, rec = US[k];
   if (!rec || rec.password !== p) { showErr('登入名稱或密碼錯誤，請重試'); return; }
   curUser = {...rec, username:u, role:curRole};
@@ -379,6 +446,9 @@ function doLogout() {
 function renderDash() {
   set('auth-page','none'); set('dashboard','block');
   const isMentor = curUser.role==='mentor', code = curUser.code;
+  set('admin-section', curUser.role==='admin' ? 'block' : 'none');
+  set('fam-section', 'none');
+  set('act-card','block');
 
   // topbar
   const chip = ge('user-chip');
@@ -386,12 +456,14 @@ function renderDash() {
   chip.className = 'user-chip ' + (isMentor?'uc-mentor':'uc-family');
 
   // banner
-  ge('banner').className = 'banner ' + (isMentor?'banner-mentor':'banner-family');
-  ge('ban-name').textContent = '歡迎回來，' + curUser.username + '！';
-  ge('ban-sub').textContent  = '帳戶編號：' + code + '　·　今日：' + new Date().toLocaleDateString('zh-HK');
+  const isAdmin = curUser.role==='admin';
+  ge('banner').className = 'banner ' + (isAdmin?'admin-banner':isMentor?'banner-mentor':'banner-family');
+  ge('ban-name').textContent = isAdmin ? '管理員總覽' : '歡迎回來，' + curUser.username + '！';
+  ge('ban-sub').textContent  = isAdmin ? '今日：' + new Date().toLocaleDateString('zh-HK') + '　·　可查閱所有家庭及友師出席資料' : '帳戶編號：' + code + '　·　今日：' + new Date().toLocaleDateString('zh-HK');
 
-  isMentor ? renderMentor(code) : renderFamily(code);
-  renderProfile();
+  if (curUser.role==='admin') { set('act-card','none'); renderAdmin(); renderAdminProfile(); }
+  else if (isMentor) { renderMentor(code); renderProfile(); }
+  else { renderFamily(code); renderProfile(); }
 }
 
 // ── FAMILY VIEW ──
@@ -480,6 +552,7 @@ function actTable(acts){
 
 // ── PROFILE ──
 function renderProfile(){
+  document.querySelector('.pwd-btn').style.display='';
   const isMentor = curUser.role==='mentor';
   ge('profile-grid').innerHTML=`
     <div><div class="pf-key">登入名稱</div><div class="pf-val">${curUser.username}</div></div>
@@ -506,6 +579,151 @@ let toastT;
 function showToast(m){
   const t=ge('toast'); t.textContent=m; t.style.display='block';
   clearTimeout(toastT); toastT=setTimeout(()=>t.style.display='none',3200);
+}
+
+
+// ══════════════════════════════════════
+//  ADMIN
+// ══════════════════════════════════════
+let admCurrentTab = 'family';
+let admAllRows = [];
+
+function renderAdmin() {
+  set('fam-section','none');
+  // Admin banner stats
+  const totalFam = Object.keys(FAMILY_DB).length;
+  const totalMentor = Object.keys(MENTOR_DB).length;
+  let famDone=0, famTotal=0, mentorDone=0, mentorTotal=0;
+  Object.values(FAMILY_DB).forEach(fd => {
+    const all=[...fd.studentActivities,...fd.parentActivities];
+    famTotal+=all.length; famDone+=all.filter(a=>a.status==='已完成').length;
+  });
+  Object.values(MENTOR_DB).forEach(md => {
+    if(!md.activities) return;
+    mentorTotal+=md.activities.length;
+    mentorDone+=md.activities.filter(a=>a.status==='已完成').length;
+  });
+  ge('s-a').textContent=totalFam; ge('s-a-l').textContent='家庭單位';
+  ge('s-b').textContent=totalMentor; ge('s-b-l').textContent='友師';
+  ge('s-c').textContent=pct(famDone+mentorDone,famTotal+mentorTotal)+'%'; ge('s-c-l').textContent='整體完成率';
+  admCurrentTab='family';
+  admSwitch('family');
+}
+
+function admSwitch(tab) {
+  admCurrentTab = tab;
+  ge('adm-tab-family').classList.toggle('active', tab==='family');
+  ge('adm-tab-mentor').classList.toggle('active', tab==='mentor');
+  ge('adm-search').value='';
+  admBuildRows();
+  admRender(admAllRows);
+}
+
+function admBuildRows() {
+  if (admCurrentTab==='family') {
+    admAllRows = Object.entries(FAMILY_DB).map(([code, fd]) => {
+      const sa=fd.studentActivities, pa=fd.parentActivities;
+      const sd=sa.filter(a=>a.status==='已完成').length;
+      const pd=pa.filter(a=>a.status==='已完成').length;
+      const tot=sa.length+pa.length, done=sd+pd;
+      return {code, sd, st:sa.length, pd, pt:pa.length, done, tot, rate:pct(done,tot)};
+    }).sort((a,b)=>a.code.localeCompare(b.code));
+    // Summary
+    const totalDone = admAllRows.reduce((s,r)=>s+r.done,0);
+    const totalActs = admAllRows.reduce((s,r)=>s+r.tot,0);
+    const high=admAllRows.filter(r=>r.rate>=80).length;
+    const mid=admAllRows.filter(r=>r.rate>=50&&r.rate<80).length;
+    const low=admAllRows.filter(r=>r.rate<50).length;
+    ge('adm-summary').innerHTML=`
+      <div class="adm-sum-box"><div class="adm-sum-num">${admAllRows.length}</div><div class="adm-sum-lbl">家庭單位總數</div></div>
+      <div class="adm-sum-box"><div class="adm-sum-num">${pct(totalDone,totalActs)}%</div><div class="adm-sum-lbl">整體完成率</div></div>
+      <div class="adm-sum-box"><div class="adm-sum-num pct-high">${high}</div><div class="adm-sum-lbl">≥80% 完成</div></div>
+      <div class="adm-sum-box"><div class="adm-sum-num pct-mid">${mid}</div><div class="adm-sum-lbl">50–79% 完成</div></div>
+      <div class="adm-sum-box"><div class="adm-sum-num pct-low">${low}</div><div class="adm-sum-lbl"><50% 完成</div></div>`;
+    // Table headers
+    ge('adm-thead').innerHTML=`<tr>
+      <th>編號</th><th>學生活動</th><th>家長活動</th><th>整體進度</th><th>完成率</th></tr>`;
+  } else {
+    admAllRows = Object.entries(MENTOR_DB).map(([code, md]) => {
+      const acts = md.activities||[];
+      const done=acts.filter(a=>a.status==='已完成').length;
+      const tot=acts.length;
+      return {code, done, tot, rate:pct(done,tot), fams:(md.families||[]).length};
+    }).sort((a,b)=>a.code.localeCompare(b.code));
+    const totalDone = admAllRows.reduce((s,r)=>s+r.done,0);
+    const totalActs = admAllRows.reduce((s,r)=>s+r.tot,0);
+    const high=admAllRows.filter(r=>r.rate>=80).length;
+    const mid=admAllRows.filter(r=>r.rate>=50&&r.rate<80).length;
+    const low=admAllRows.filter(r=>r.rate<50).length;
+    ge('adm-summary').innerHTML=`
+      <div class="adm-sum-box"><div class="adm-sum-num">${admAllRows.length}</div><div class="adm-sum-lbl">友師總數</div></div>
+      <div class="adm-sum-box"><div class="adm-sum-num">${pct(totalDone,totalActs)}%</div><div class="adm-sum-lbl">整體完成率</div></div>
+      <div class="adm-sum-box"><div class="adm-sum-num pct-high">${high}</div><div class="adm-sum-lbl">≥80% 完成</div></div>
+      <div class="adm-sum-box"><div class="adm-sum-num pct-mid">${mid}</div><div class="adm-sum-lbl">50–79% 完成</div></div>
+      <div class="adm-sum-box"><div class="adm-sum-num pct-low">${low}</div><div class="adm-sum-lbl"><50% 完成</div></div>`;
+    ge('adm-thead').innerHTML=`<tr>
+      <th>編號</th><th>負責家庭</th><th>友師活動</th><th>整體進度</th><th>完成率</th></tr>`;
+  }
+}
+
+function admRender(rows) {
+  if (admCurrentTab==='family') {
+    ge('adm-tbody').innerHTML = rows.map(r => {
+      const cls=r.rate>=80?'pct-high':r.rate>=50?'pct-mid':'pct-low';
+      const bcls=r.rate>=80?'bar-high':r.rate>=50?'bar-mid':'bar-low';
+      return `<tr>
+        <td class="adm-code">${r.code}</td>
+        <td>${r.sd}/${r.st}</td>
+        <td>${r.pd}/${r.pt}</td>
+        <td><div class="adm-mini-wrap"><div class="adm-mini-bar ${bcls}" style="width:${r.rate}%"></div></div>${r.done}/${r.tot}</td>
+        <td><span class="adm-pct ${cls}">${r.rate}%</span></td>
+      </tr>`;
+    }).join('');
+  } else {
+    ge('adm-tbody').innerHTML = rows.map(r => {
+      const cls=r.rate>=80?'pct-high':r.rate>=50?'pct-mid':'pct-low';
+      const bcls=r.rate>=80?'bar-high':r.rate>=50?'bar-mid':'bar-low';
+      return `<tr>
+        <td class="adm-code">${r.code}</td>
+        <td>${r.fams} 個家庭</td>
+        <td>${r.done}/${r.tot}</td>
+        <td><div class="adm-mini-wrap"><div class="adm-mini-bar ${bcls}" style="width:${r.rate}%"></div></div>${r.done}/${r.tot}</td>
+        <td><span class="adm-pct ${cls}">${r.rate}%</span></td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+function admFilter() {
+  const q = ge('adm-search').value.trim().toUpperCase();
+  admRender(q ? admAllRows.filter(r=>r.code.includes(q)) : admAllRows);
+}
+
+function admExport() {
+  const tab = admCurrentTab;
+  let csv = tab==='family'
+    ? '編號,學生活動完成,學生活動總數,家長活動完成,家長活動總數,整體完成,整體總數,完成率\n'
+    : '編號,負責家庭數,友師活動完成,友師活動總數,完成率\n';
+  admAllRows.forEach(r => {
+    if (tab==='family')
+      csv+=`${r.code},${r.sd},${r.st},${r.pd},${r.pt},${r.done},${r.tot},${r.rate}%\n`;
+    else
+      csv+=`${r.code},${r.fams},${r.done},${r.tot},${r.rate}%\n`;
+  });
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=(tab==='family'?'家庭單位':'友師')+'出席報告_'+new Date().toLocaleDateString('zh-HK').replace(/\//g,'-')+'.csv';
+  a.click();
+}
+
+function renderAdminProfile() {
+  ge('profile-grid').innerHTML=`
+    <div><div class="pf-key">登入名稱</div><div class="pf-val">C000</div></div>
+    <div><div class="pf-key">身份</div><div class="pf-val">🔑 系統管理員</div></div>
+    <div><div class="pf-key">登入日期</div><div class="pf-val">${new Date().toLocaleDateString('zh-HK')}</div></div>`;
+  // Hide change password button for admin
+  document.querySelector('.pwd-btn').style.display='none';
 }
 
 // ── ENTER KEY ──
