@@ -220,6 +220,45 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text
 .adm-detail-prog-bar-bg{background:#eee;border-radius:100px;height:8px;width:100px;overflow:hidden;flex-shrink:0;}
 .adm-detail-prog-bar-fill{height:100%;border-radius:100px;}
 .adm-detail-badge{display:inline-flex;align-items:center;gap:.2rem;padding:.18rem .6rem;border-radius:100px;font-size:.73rem;font-weight:600;flex-shrink:0;width:76px;justify-content:center;}
+/* ── ACTIVITY NOT-DONE LIST ── */
+.act-stat-row{cursor:pointer;}
+.act-stat-row:hover{background:#fff5e8;}
+.act-stat-row.expanded .expand-icon{transform:rotate(180deg);}
+.act-notdone-panel{background:#fafafa;border-radius:10px;padding:.9rem 1.1rem;
+  margin:.1rem 0 .4rem 22px;border:1px solid #ece8e2;display:none;}
+.act-notdone-panel.open{display:block;}
+.act-notdone-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem;flex-wrap:wrap;gap:.4rem;}
+.act-notdone-title{font-size:.82rem;font-weight:700;color:var(--grey);}
+.act-notdone-count{font-size:.78rem;padding:.18rem .65rem;border-radius:100px;font-weight:600;}
+.anc-red{background:#fdf0ee;color:var(--danger);}
+.anc-green{background:#e8f5ee;color:var(--success);}
+.chips-wrap{display:flex;flex-wrap:wrap;gap:.4rem;}
+.code-chip{padding:.25rem .65rem;border-radius:8px;font-size:.8rem;font-weight:600;
+  background:#fff;border:1.5px solid var(--border);color:var(--primary);
+  cursor:pointer;transition:all .18s;}
+.code-chip:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
+.act-stat-row-wrap{border-bottom:1px solid #f0f0f0;}
+.act-stat-row-wrap:last-child{border-bottom:none;}
+.act-stat-row{border-bottom:none !important;}
+.expand-icon{font-size:.72rem;color:var(--muted);margin-left:.3rem;transition:transform .22s;flex-shrink:0;width:14px;text-align:center;}
+.all-done-msg{font-size:.82rem;color:var(--success);font-weight:500;}
+/* ── EDIT MODE ── */
+.chip-edit-mode .code-chip{background:#fff8f0;border-color:var(--primary);color:var(--primary-dark);}
+.chip-edit-mode .code-chip:hover{background:var(--success);border-color:var(--success);color:#fff;}
+.chip-edit-mode .code-chip::after{content:' ✓';font-size:.7rem;opacity:.7;}
+.edit-toggle-btn{padding:.26rem .75rem;border-radius:100px;border:1.5px solid var(--border);
+  background:transparent;font-family:'Noto Sans TC',sans-serif;font-size:.78rem;font-weight:600;
+  cursor:pointer;transition:all .2s;color:var(--muted);}
+.edit-toggle-btn.active{background:#fff3e0;border-color:var(--primary);color:var(--primary-dark);}
+.edit-toggle-btn:hover:not(.active){border-color:var(--primary);color:var(--primary);}
+.edit-hint{font-size:.76rem;color:var(--primary-dark);background:#fff8f0;border:1px solid rgba(224,123,0,.25);
+  border-radius:8px;padding:.45rem .8rem;margin-top:.55rem;display:none;}
+.edit-hint.show{display:block;}
+.save-indicator{display:inline-flex;align-items:center;gap:.3rem;font-size:.76rem;
+  color:var(--success);font-weight:600;opacity:0;transition:opacity .4s;}
+.save-indicator.show{opacity:1;}
+
+
 
 /* ── ADMIN VIEW TOGGLE ── */
 .adm-view-toggle{display:flex;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap;}
@@ -704,61 +743,100 @@ function admRenderActStats(tab){
 
   if(tab==='student'){
     const sample=Object.values(FAMILY_DB)[0].studentActivities;
-    total=Object.keys(FAMILY_DB).length;
-    groupLabel='家庭單位（學生）';
-    acts=sample.map((a,i)=>({
-      name:a.name,
-      done:Object.values(FAMILY_DB).filter(fd=>fd.studentActivities[i]&&fd.studentActivities[i].status==='已完成').length
-    }));
+    total=Object.keys(FAMILY_DB).length; groupLabel='家庭單位（學生）';
+    acts=sample.map(function(a,i){
+      return {
+        name:a.name,
+        done:Object.values(FAMILY_DB).filter(function(fd){return fd.studentActivities[i]&&fd.studentActivities[i].status==='已完成';}).length,
+        notDone:Object.entries(FAMILY_DB).filter(function(e){var fd=e[1];return !(fd.studentActivities[i]&&fd.studentActivities[i].status==='已完成');}).map(function(e){return e[0];})
+      };
+    });
   } else if(tab==='parent'){
     const sample=Object.values(FAMILY_DB)[0].parentActivities;
-    total=Object.keys(FAMILY_DB).length;
-    groupLabel='家庭單位（家長）';
-    acts=sample.map((a,i)=>({
-      name:a.name,
-      done:Object.values(FAMILY_DB).filter(fd=>fd.parentActivities[i]&&fd.parentActivities[i].status==='已完成').length
-    }));
+    total=Object.keys(FAMILY_DB).length; groupLabel='家庭單位（家長）';
+    acts=sample.map(function(a,i){
+      return {
+        name:a.name,
+        done:Object.values(FAMILY_DB).filter(function(fd){return fd.parentActivities[i]&&fd.parentActivities[i].status==='已完成';}).length,
+        notDone:Object.entries(FAMILY_DB).filter(function(e){var fd=e[1];return !(fd.parentActivities[i]&&fd.parentActivities[i].status==='已完成');}).map(function(e){return e[0];})
+      };
+    });
   } else {
     const sample=Object.values(MENTOR_DB)[0].activities||[];
-    total=Object.keys(MENTOR_DB).length;
-    groupLabel='友師';
-    acts=sample.map((a,i)=>({
-      name:a.name,
-      done:Object.values(MENTOR_DB).filter(md=>md.activities&&md.activities[i]&&md.activities[i].status==='已完成').length
-    }));
+    total=Object.keys(MENTOR_DB).length; groupLabel='友師';
+    acts=sample.map(function(a,i){
+      return {
+        name:a.name,
+        done:Object.values(MENTOR_DB).filter(function(md){return md.activities&&md.activities[i]&&md.activities[i].status==='已完成';}).length,
+        notDone:Object.entries(MENTOR_DB).filter(function(e){var md=e[1];return !(md.activities&&md.activities[i]&&md.activities[i].status==='已完成');}).map(function(e){return e[0];})
+      };
+    });
   }
 
-  // Summary stats
-  const rates=acts.map(a=>pct(a.done,total));
-  const avgRate=Math.round(rates.reduce((s,r)=>s+r,0)/rates.length);
-  const highest=acts.reduce((m,a)=>pct(a.done,total)>pct(m.done,total)?a:m,acts[0]);
-  const lowest=acts.reduce((m,a)=>pct(a.done,total)<pct(m.done,total)?a:m,acts[0]);
+  const rates=acts.map(function(a){return pct(a.done,total);});
+  const avgRate=Math.round(rates.reduce(function(s,r){return s+r;},0)/rates.length);
+  const highest=acts.reduce(function(m,a){return pct(a.done,total)>pct(m.done,total)?a:m;},acts[0]);
+  const lowest=acts.reduce(function(m,a){return pct(a.done,total)<pct(m.done,total)?a:m;},acts[0]);
 
-  let html=`<div class="act-stat-summary">
-    <div class="act-stat-sum-box"><div class="act-stat-sum-num">${total}</div><div class="act-stat-sum-lbl">${groupLabel}總數</div></div>
-    <div class="act-stat-sum-box"><div class="act-stat-sum-num">${acts.length}</div><div class="act-stat-sum-lbl">活動項目總數</div></div>
-    <div class="act-stat-sum-box"><div class="act-stat-sum-num" style="color:var(--primary)">${avgRate}%</div><div class="act-stat-sum-lbl">平均完成率</div></div>
-    <div class="act-stat-sum-box"><div class="act-stat-sum-num pct-high">${pct(highest.done,total)}%</div><div class="act-stat-sum-lbl">最高：${highest.name.length>10?highest.name.slice(0,10)+'…':highest.name}</div></div>
-    <div class="act-stat-sum-box"><div class="act-stat-sum-num pct-low">${pct(lowest.done,total)}%</div><div class="act-stat-sum-lbl">最低：${lowest.name.length>10?lowest.name.slice(0,10)+'…':lowest.name}</div></div>
-  </div>`;
+  var h='<div class="act-stat-summary">'
+    +'<div class="act-stat-sum-box"><div class="act-stat-sum-num">'+total+'</div><div class="act-stat-sum-lbl">'+groupLabel+'總數</div></div>'
+    +'<div class="act-stat-sum-box"><div class="act-stat-sum-num">'+acts.length+'</div><div class="act-stat-sum-lbl">活動項目總數</div></div>'
+    +'<div class="act-stat-sum-box"><div class="act-stat-sum-num" style="color:var(--primary)">'+avgRate+'%</div><div class="act-stat-sum-lbl">平均完成率</div></div>'
+    +'<div class="act-stat-sum-box"><div class="act-stat-sum-num pct-high">'+pct(highest.done,total)+'%</div><div class="act-stat-sum-lbl">最高：'+(highest.name.length>10?highest.name.slice(0,10)+'…':highest.name)+'</div></div>'
+    +'<div class="act-stat-sum-box"><div class="act-stat-sum-num pct-low">'+pct(lowest.done,total)+'%</div><div class="act-stat-sum-lbl">最低：'+(lowest.name.length>10?lowest.name.slice(0,10)+'…':lowest.name)+'</div></div>'
+    +'</div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.9rem;">'
+    +'<div style="font-size:.78rem;color:var(--muted);">💡 點擊活動列，即可展開查看未完成名單</div>'
+    +'<button class="edit-toggle-btn" id="edit-toggle-btn" onclick="toggleEditMode()">✏️ 編輯出席記錄</button>'
+    +'</div>'
+    +'<div class="edit-hint" id="edit-hint">✏️ 編輯模式：點擊編號即可將該家庭標記為<strong>已完成</strong>此活動。修改會即時生效。</div>';
 
-  // Activity rows
-  html += acts.map((a,i)=>{
-    const r=pct(a.done,total);
-    const fillCls=r>=80?'fill-high':r>=50?'fill-mid':'fill-low';
-    const pctCls=r>=80?'pct-high':r>=50?'pct-mid':'pct-low';
-    return `<div class="act-stat-row">
-      <div class="act-stat-num">${i+1}</div>
-      <div class="act-stat-name">${a.name}</div>
-      <div class="act-stat-bar-wrap">
-        <div class="act-stat-bar-bg"><div class="act-stat-bar-fill ${fillCls}" style="width:${r}%"></div></div>
-      </div>
-      <div class="act-stat-count">${a.done}/${total}</div>
-      <div class="act-stat-pct ${pctCls}">${r}%</div>
-    </div>`;
+  h += acts.map(function(a,i){
+    var r=pct(a.done,total), nd=a.notDone.length;
+    var fillCls=r>=80?'fill-high':r>=50?'fill-mid':'fill-low';
+    var pctCls=r>=80?'pct-high':r>=50?'pct-mid':'pct-low';
+    var panelId='ndp-'+tab+'-'+i, rowId='ndr-'+tab+'-'+i;
+
+    var chips;
+    if(nd===0){
+      chips='<span class="all-done-msg">✅ 全部已完成！</span>';
+    } else {
+      chips=a.notDone.map(function(c){
+        var chipId='chip-'+tab+'-'+i+'-'+c;
+        return '<span class="code-chip" id="'+chipId+'" onclick="event.stopPropagation();handleChipClick(\''+tab+'\','+i+',\''+c+'\',\''+chipId+'\',\''+panelId+'\',\''+rowId+'\')">'+c+'</span>';
+      }).join('');
+    }
+
+    var countBadge = nd===0
+      ? '<span class="act-notdone-count anc-green">全部完成</span>'
+      : '<span class="act-notdone-count anc-red">'+nd+' 個未完成</span>';
+
+    return '<div class="act-stat-row-wrap">'
+      +'<div class="act-stat-row" id="'+rowId+'" onclick="toggleNotDone(\''+panelId+'\',\''+rowId+'\')">'
+      +'<div class="act-stat-num">'+(i+1)+'</div>'
+      +'<div class="act-stat-name">'+a.name+'</div>'
+      +'<div class="act-stat-bar-wrap"><div class="act-stat-bar-bg"><div class="act-stat-bar-fill '+fillCls+'" style="width:'+r+'%"></div></div></div>'
+      +'<div class="act-stat-count">'+a.done+'/'+total+'</div>'
+      +'<div class="act-stat-pct '+pctCls+'">'+r+'%</div>'
+      +'<div class="expand-icon">▼</div>'
+      +'</div>'
+      +'<div class="act-notdone-panel" id="'+panelId+'">'
+      +'<div class="act-notdone-header"><span class="act-notdone-title">未完成名單</span>'+countBadge+'</div>'
+      +'<div class="chips-wrap">'+chips+'</div>'
+      +'</div>'
+      +'</div>';
   }).join('');
 
-  card.innerHTML=html;
+  card.innerHTML=h;
+  if(editMode) toggleEditMode();
+}
+
+function toggleNotDone(panelId, rowId){
+  var panel=ge(panelId), row=ge(rowId);
+  var isOpen=panel.classList.contains('open');
+  document.querySelectorAll('.act-notdone-panel.open').forEach(function(p){p.classList.remove('open');});
+  document.querySelectorAll('.act-stat-row.expanded').forEach(function(r){r.classList.remove('expanded');});
+  if(!isOpen){ panel.classList.add('open'); row.classList.add('expanded'); }
 }
 
 function admSwitch(tab){
@@ -834,6 +912,124 @@ function admExport(){
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
   a.download=(tab==='family'?'家庭單位':'友師')+'出席報告_'+new Date().toLocaleDateString('zh-HK').replace(/\//g,'-')+'.csv';
   a.click();
+}
+
+
+// ── EDIT MODE ──
+let editMode = false;
+let currentActTab = 'student';
+
+function toggleEditMode(){
+  editMode = !editMode;
+  const btn = ge('edit-toggle-btn');
+  const hint = ge('edit-hint');
+  if(btn){ btn.classList.toggle('active', editMode); btn.textContent = editMode ? '✅ 完成編輯' : '✏️ 編輯出席記錄'; }
+  if(hint){ hint.classList.toggle('show', editMode); }
+  // Toggle chip-edit-mode on all panels
+  document.querySelectorAll('.chips-wrap').forEach(w => w.classList.toggle('chip-edit-mode', editMode));
+}
+
+function handleChipClick(tab, actIdx, code, chipId, panelId, rowId){
+  if(!editMode){
+    // View mode: open detail modal
+    openAdmDetail(code);
+    return;
+  }
+  // Edit mode: mark as completed
+  markActivityDone(tab, actIdx, code, chipId, panelId, rowId);
+}
+
+function markActivityDone(tab, actIdx, code, chipId, panelId, rowId){
+  // Update FAMILY_DB in memory
+  if(tab==='student'){
+    if(FAMILY_DB[code] && FAMILY_DB[code].studentActivities[actIdx]){
+      FAMILY_DB[code].studentActivities[actIdx].status = '已完成';
+    }
+  } else if(tab==='parent'){
+    if(FAMILY_DB[code] && FAMILY_DB[code].parentActivities[actIdx]){
+      FAMILY_DB[code].parentActivities[actIdx].status = '已完成';
+    }
+  }
+
+  // Animate and remove chip
+  const chip = ge(chipId);
+  if(chip){
+    chip.style.transition='all .3s';
+    chip.style.background='var(--success)';
+    chip.style.borderColor='var(--success)';
+    chip.style.color='#fff';
+    chip.textContent = code + ' ✓';
+    setTimeout(()=>{
+      chip.style.opacity='0';
+      chip.style.transform='scale(.85)';
+      setTimeout(()=>{
+        chip.remove();
+        // Update panel count badge
+        refreshPanelCount(panelId, rowId, tab, actIdx);
+        // Refresh overview table row counts if visible
+        if(ge('adm-view-overview').style.display!=='none') admBuildRows(), admRender(admAllRows);
+      }, 280);
+    }, 420);
+  }
+
+  // Show save indicator
+  showSaveIndicator(panelId);
+}
+
+function refreshPanelCount(panelId, rowId, tab, actIdx){
+  const panel = ge(panelId);
+  if(!panel) return;
+  const chips = panel.querySelectorAll('.code-chip');
+  const nd = chips.length;
+  const row = ge(rowId);
+
+  // Update badge
+  const badge = panel.querySelector('.act-notdone-count');
+  if(badge){
+    if(nd===0){
+      badge.textContent='全部完成';
+      badge.className='act-notdone-count anc-green';
+      panel.querySelector('.chips-wrap').innerHTML='<span class="all-done-msg">✅ 全部已完成！</span>';
+    } else {
+      badge.textContent=nd+' 個未完成';
+    }
+  }
+
+  // Update the bar and percentage in the row
+  const total = tab==='mentor' ? Object.keys(MENTOR_DB).length : Object.keys(FAMILY_DB).length;
+  const done_count = tab==='student'
+    ? Object.values(FAMILY_DB).filter(fd=>fd.studentActivities[actIdx]&&fd.studentActivities[actIdx].status==='已完成').length
+    : tab==='parent'
+    ? Object.values(FAMILY_DB).filter(fd=>fd.parentActivities[actIdx]&&fd.parentActivities[actIdx].status==='已完成').length
+    : Object.values(MENTOR_DB).filter(md=>md.activities&&md.activities[actIdx]&&md.activities[actIdx].status==='已完成').length;
+
+  const r = pct(done_count, total);
+  const fillCls = r>=80?'fill-high':r>=50?'fill-mid':'fill-low';
+  const pctCls  = r>=80?'pct-high':r>=50?'pct-mid':'pct-low';
+
+  if(row){
+    const bar = row.querySelector('.act-stat-bar-fill');
+    const pctEl = row.querySelector('.act-stat-pct');
+    const countEl = row.querySelector('.act-stat-count');
+    if(bar){ bar.style.width=r+'%'; bar.className='act-stat-bar-fill '+fillCls; }
+    if(pctEl){ pctEl.textContent=r+'%'; pctEl.className='act-stat-pct '+pctCls; }
+    if(countEl){ countEl.textContent=done_count+'/'+total; }
+  }
+}
+
+function showSaveIndicator(panelId){
+  const panel = ge(panelId);
+  if(!panel) return;
+  let ind = panel.querySelector('.save-indicator');
+  if(!ind){
+    ind = document.createElement('div');
+    ind.className='save-indicator';
+    ind.innerHTML='✅ 已更新';
+    panel.querySelector('.act-notdone-header').appendChild(ind);
+  }
+  ind.classList.add('show');
+  clearTimeout(ind._t);
+  ind._t = setTimeout(()=>ind.classList.remove('show'), 2000);
 }
 
 // ── ADMIN FAMILY DETAIL ──
